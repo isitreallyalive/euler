@@ -1,11 +1,11 @@
 use ::regex::Regex;
 use clap::Parser;
 use color_eyre::eyre::eyre;
-use color_eyre::Result;
-use euler::{regex, PUBLIC_CHALLENGES};
+use euler::{prelude::*, regex, PUBLIC_CHALLENGES};
 use scraper::{Html, Selector};
 use std::fs::{read_to_string, File, OpenOptions};
 use std::io::Write;
+use std::time::Instant;
 
 mod solutions;
 
@@ -102,6 +102,7 @@ async fn main() -> Result<()> {
 {}
 use euler::prelude::*;
 
+pub const LOOPS: u8 = 100;
 pub struct Problem;
 
 impl Execute for Problem {{
@@ -137,7 +138,22 @@ impl Execute for Problem {{
 
         Commands::Run { problem } => {
             let solution = solutions::get(problem).ok_or(eyre!("Problem not found"))?;
-            solution.execute()?;
+            let loops = solutions::loops(problem);
+
+            let start = Instant::now();
+            let out = solution.execute()?;
+
+            for _ in 0..(loops - 1) {
+                solution.execute()?;
+            }
+
+            let time = start.elapsed();
+            println!("{} loops in {:?}", loops, time);
+
+            match out {
+                Return::None => {}
+                Return::u32(n) => println!("{}", n),
+            }
         }
     }
 
