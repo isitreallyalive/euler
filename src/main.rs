@@ -76,6 +76,7 @@ async fn main() -> Result<()> {
                         )
                         .to_string()
                         .replace(r#"\dots"#, "...")
+                        .replace(r#"\times"#, "×")
                 };
 
                 (
@@ -155,6 +156,7 @@ impl Execute for Problem {{
                 Return::None => {}
                 Return::u32(n) => println!("{}", n),
                 Return::u64(n) => println!("{}", n),
+                Return::i32(n) => println!("{}", n),
             }
         }
     }

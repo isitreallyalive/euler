@@ -31,7 +31,8 @@ macro_rules! import_solutions {
 import_solutions! {
     // start-solutions
     1,
-	2,
-	3,
+    2,
+    3,
+    4,
     // end-solutions
 }
