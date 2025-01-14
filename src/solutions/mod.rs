@@ -32,5 +32,6 @@ import_solutions! {
     // start-solutions
     1,
 	2,
+	3,
     // end-solutions
 }

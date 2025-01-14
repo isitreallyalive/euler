@@ -154,6 +154,7 @@ impl Execute for Problem {{
             match out {
                 Return::None => {}
                 Return::u32(n) => println!("{}", n),
+                Return::u64(n) => println!("{}", n),
             }
         }
     }

@@ -4,6 +4,7 @@ use color_eyre::Result;
 pub enum Return {
     None,
     u32(u32),
+    u64(u64),
 }
 
 pub trait Execute {
