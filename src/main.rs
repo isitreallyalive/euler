@@ -75,6 +75,7 @@ async fn main() -> Result<()> {
                             "$1",
                         )
                         .to_string()
+                        .replace(r#"\dots"#, "...")
                 };
 
                 (
@@ -106,8 +107,10 @@ pub const LOOPS: u8 = 100;
 pub struct Problem;
 
 impl Execute for Problem {{
-    fn execute() -> Result<()> {{
-        Ok(())
+    fn execute(&self) -> Result<Return> {{
+        let value = unimplemented!();
+
+        Ok(Return::None)
     }}
 }}"#,
                 problem, title, description
@@ -115,10 +118,8 @@ impl Execute for Problem {{
 
             // add to solution list
             let mut contents = read_to_string("src/solutions/mod.rs")?;
-
-            let start = contents.find("// start-solutions").unwrap() + "// start-solutions".len();
-
-            contents.insert_str(start, &format!("{},\n", problem));
+            let start = contents.rfind(",").unwrap() + 1;
+            contents.insert_str(start, &format!("\n\t{},", problem));
 
             let mut solutions = OpenOptions::new()
                 .write(true)
