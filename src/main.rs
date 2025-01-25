@@ -24,6 +24,7 @@ pub enum Commands {
     New { problem: usize },
 
     /// Runs an existing solution
+    #[clap(aliases = &["r"])]
     Run { problem: usize },
 }
 
@@ -111,7 +112,7 @@ impl Execute for Problem {{
     fn execute(&self) -> Result<Return> {{
         let value = unimplemented!();
 
-        Ok(Return::None)
+        Ok(Return::u32(value))
     }}
 }}"#,
                 problem, title, description
@@ -152,12 +153,7 @@ impl Execute for Problem {{
             let time = start.elapsed();
             println!("{} loops in {:?}", loops, time);
 
-            match out {
-                Return::None => {}
-                Return::u32(n) => println!("{}", n),
-                Return::u64(n) => println!("{}", n),
-                Return::i32(n) => println!("{}", n),
-            }
+            println!("{}", out);
         }
     }
 
