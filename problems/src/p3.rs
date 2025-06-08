@@ -5,7 +5,7 @@
 
 // time complexity: O(sqrt n)
 // https://en.wikipedia.org/wiki/Trial_division
-use crate::prelude::*;
+use euler::prelude::*;
 
 const NUMBER: u64 = 600_851_475_143;
 

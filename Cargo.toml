@@ -1,14 +1,19 @@
-[package]
-name = "euler"
-publish = false
-version = "0.1.0"
-edition = "2021"
-build = "build.rs"
+[workspace]
+resolver = "3"
+members = ["euler", "problems", "runner"]
+default-members = ["runner"]
 
-[dependencies]
-clap = { version = "4.5.39", features = ["derive"] }
+[workspace.package]
+version = "0.0.0"
+publish = false
+edition = "2024"
+
+[workspace.dependencies]
+euler = { path = "euler" }
 color-eyre = "0.6.5"
-inventory = "0.3.20"
 regex = "1.11.1"
-reqwest = { version = "0.12.19", default-features = false, features = ["blocking", "rustls-tls"] }
 scraper = "0.23.1"
+inventory = "0.3.20"
+clap = "4.5.39"
+problems = { version = "0.0.0", path = "problems" }
+reqwest = "0.12.19"

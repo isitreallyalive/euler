@@ -4,7 +4,7 @@
 //! What is the 10,001st prime number?
 
 // time complexity: O(n log log n)
-use crate::prelude::*;
+use euler::prelude::*;
 
 const N: usize = 10_001;
 

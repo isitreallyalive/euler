@@ -4,7 +4,7 @@
 //! What is the smallest positive number that is evenly divisble by all of the numbers from 1 to 20?
 
 // time complexity: O(n log max_value)
-use crate::prelude::*;
+use euler::prelude::*;
 
 // https://en.wikipedia.org/wiki/Euclidean_algorithm
 fn lcm(mut a: u64, mut b: u64) -> u64 {

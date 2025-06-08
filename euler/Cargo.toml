@@ -1,0 +1,9 @@
+[package]
+name = "euler"
+version.workspace = true
+publish.workspace = true
+edition.workspace = true
+
+[dependencies]
+color-eyre.workspace = true
+inventory = { workspace = true }

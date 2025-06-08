@@ -4,12 +4,19 @@ use std::{
     time::{Duration, Instant},
 };
 
-mod all;
+pub mod prelude {
+    pub use super::{error, problem};
+    pub use color_eyre::Result;
+}
 
+/// A Project Euler problem
 pub struct Problem {
-    number: usize,
-    loops: u8,
-    solver: fn() -> Result<Box<dyn Display>>,
+    /// The number of the problem on the site
+    pub number: usize,
+    /// How many iterations to run the solution for when benchmarking
+    pub loops: usize,
+    /// A function that returns the solution to the problem
+    pub solver: fn() -> Result<Box<dyn Display>>,
 }
 
 impl Problem {
@@ -19,10 +26,6 @@ impl Problem {
 
     pub fn all() -> Vec<&'static Self> {
         inventory::iter::<Self>().collect()
-    }
-
-    pub fn loops(&self) -> u8 {
-        self.loops
     }
 
     pub fn solve(&self) -> Result<(Box<dyn Display>, Duration)> {
@@ -41,7 +44,7 @@ macro_rules! problem {
     // register a new problem
     ($number:expr, $loops:expr, $solver:expr) => {
         inventory::submit! {
-            $crate::problems::Problem {
+            $crate::Problem {
                 number: $number,
                 loops: $loops,
                 solver: || $solver().map(|x| Box::new(x) as Box<dyn std::fmt::Display>)

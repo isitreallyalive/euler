@@ -1,13 +1,22 @@
 use ::regex::Regex;
 use clap::Parser;
 use color_eyre::eyre::eyre;
-use euler::{regex, Problem, PUBLIC_CHALLENGES};
+use euler::Problem;
 use scraper::{Html, Selector};
 use std::{
     fs::{File, OpenOptions},
     io::Write,
     time::Duration,
 };
+
+// this needs to be here to make sure all of the solutions get registered to the inventory
+extern crate problems;
+
+/// How many solutions can be shared publicly according to Project Euler's website.
+const PUBLIC_CHALLENGES: usize = 100;
+
+/// LaTeX regex
+const LATEX: &'static str = r#"\$\$?([^$]+)\$?\$"#;
 
 #[macro_use]
 extern crate clap;
@@ -21,6 +30,7 @@ struct Cli {
 #[derive(Subcommand)]
 pub enum Commands {
     /// Scaffold a new problem
+    #[clap(aliases = &["n"])]
     New { n: usize },
 
     /// Runs an existing problem
@@ -28,6 +38,7 @@ pub enum Commands {
     Run { n: usize },
 
     /// Times all of the problems ran sequentially.
+    #[clap(aliases = &["a"])]
     All,
 }
 
@@ -65,7 +76,7 @@ fn main() -> color_eyre::Result<()> {
                 };
                 let description = {
                     let selector = Selector::parse(".problem_content").unwrap();
-                    let regex = Regex::new(regex::LATEX)?;
+                    let regex = Regex::new(LATEX)?;
 
                     regex
                         .replace_all(
@@ -109,7 +120,7 @@ fn main() -> color_eyre::Result<()> {
 //!
 {}
 // time complexity: O(?)
-use crate::prelude::*;
+use euler::prelude::*;
 
 fn solve() -> Result<u32> {{
     unimplemented!();
@@ -130,31 +141,30 @@ problem!({}, solve);"#,
 
         Commands::Run { n } => {
             let problem = Problem::get(n).ok_or(eyre!("Problem not found"))?;
-            let loops = problem.loops();
-            let mut times = Vec::with_capacity(loops as usize);
+            let mut times = Vec::with_capacity(problem.loops);
 
-            for i in 1..=loops {
+            for i in 1..=problem.loops {
                 let (out, time) = problem.solve()?;
                 times.push(time);
-                if i == loops {
+                if i == problem.loops {
                     println!("{}", out);
                 }
             }
 
             let total: Duration = times.iter().sum();
-            let mean = total / loops as u32;
-            println!("{} loops: Σ = {:?}, μ = {:?}", loops, total, mean);
+            let mean = total / problem.loops as u32;
+            println!("{} loops: Σ = {:?}, μ = {:?}", problem.loops, total, mean);
         }
         Commands::All => {
             let problems = Problem::all();
-            let loops: u32 = problems.iter().map(|p| p.loops() as u32).sum();
+            let loops: usize = problems.iter().map(|p| p.loops).sum();
             let mut times = Vec::with_capacity(problems.len());
             for problem in problems {
                 let (_, time) = problem.solve()?;
                 times.push(time);
             }
             let total: Duration = times.iter().sum();
-            let mean = total / loops;
+            let mean = total / loops as u32;
             println!("Σ = {:?}, μ = {:?}", total, mean)
         }
     }

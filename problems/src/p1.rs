@@ -4,7 +4,7 @@
 //! Find the sum of all the multiples of 3 or 5 below 1000.
 
 // time complexity: O(1)
-use crate::prelude::*;
+use euler::prelude::*;
 
 fn sum_multiples(n: u32, limit: u32) -> u32 {
     let count = (limit - 1) / n;

@@ -6,7 +6,7 @@
 //! There exists exactly one Pythagorean triplet for which a + b + c = 1000. Find the product abc.
 
 // time complexity: O(?)
-use crate::prelude::*;
+use euler::prelude::*;
 
 const N: i32 = 1000;
 

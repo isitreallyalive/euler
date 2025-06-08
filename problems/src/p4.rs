@@ -4,7 +4,7 @@
 //! Find the largest palindrome made from the product of two 3-digit numbers.
 
 // time complexity: O(n^2)
-use crate::prelude::*;
+use euler::prelude::*;
 
 fn is_palindrome(n: i32) -> bool {
     let (mut original, mut reversed) = (n, 0);

@@ -1,0 +1,10 @@
+[package]
+name = "problems"
+version.workspace = true
+publish.workspace = true
+edition.workspace = true
+
+[dependencies]
+color-eyre.workspace = true
+euler.workspace = true
+inventory = { workspace = true }
