@@ -26,6 +26,9 @@ pub enum Commands {
     /// Runs an existing problem
     #[clap(aliases = &["r"])]
     Run { n: usize },
+
+    /// Times all of the problems ran sequentially.
+    All,
 }
 
 fn main() -> color_eyre::Result<()> {
@@ -139,6 +142,18 @@ problem!({}, solve);"#,
             let total: Duration = times.iter().sum();
             let mean = total / loops as u32;
             println!("{} loops: Σ = {:?}, μ = {:?}", loops, total, mean);
+        }
+        Commands::All => {
+            let problems = Problem::all();
+            let loops: u32 = problems.iter().map(|p| p.loops() as u32).sum();
+            let mut times = Vec::with_capacity(problems.len());
+            for problem in problems {
+                let (_, time) = problem.solve()?;
+                times.push(time);
+            }
+            let total: Duration = times.iter().sum();
+            let mean = total / loops;
+            println!("Σ = {:?}, μ = {:?}", total, mean)
         }
     }
 

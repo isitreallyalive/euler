@@ -17,6 +17,10 @@ impl Problem {
         inventory::iter::<Self>().find(|s| s.number == number)
     }
 
+    pub fn all() -> Vec<&'static Self> {
+        inventory::iter::<Self>().collect()
+    }
+
     pub fn loops(&self) -> u8 {
         self.loops
     }
