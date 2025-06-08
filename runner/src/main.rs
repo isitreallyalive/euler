@@ -12,6 +12,8 @@ use std::{
     time::Duration,
 };
 
+mod run;
+
 // this needs to be here to make sure all of the solutions get registered to the inventory
 extern crate problems;
 
@@ -38,8 +40,8 @@ fn main() -> Result<()> {
         match Problem::get(n) {
             Some(problem) => {
                 // run the problem
-                let (out, times) = run(problem)?;
-                let (total, mean, sd) = summarise_times(&times, problem.loops as u32);
+                let (out, times) = run::run(problem)?;
+                let (total, mean, sd) = run::summarise(&times, problem.loops as u32);
 
                 println!(
                     r#"{}
@@ -68,8 +70,8 @@ Ran for: {} loops"#,
         let mut total_loops = 0;
 
         for problem in problems {
-            let (out, times) = run(problem)?;
-            let (total, mean, sd) = summarise_times(&times, problem.loops as u32);
+            let (out, times) = run::run(problem)?;
+            let (total, mean, sd) = run::summarise(&times, problem.loops as u32);
 
             // add to overall statistics
             all_times.extend(times);
@@ -83,40 +85,6 @@ Ran for: {} loops"#,
 /// Make a URL clickable using ANSI codes
 fn url(url: String, text: String) -> String {
     format!("\x1b]8;;{}\x1b\\{}\x1b]8;;\x1b\\", url, text)
-}
-
-fn run(problem: &'static Problem) -> Result<(Box<dyn Display>, Vec<Duration>)> {
-    // store the runtimes
-    let Problem { loops, .. } = problem.clone();
-    let mut times = Vec::with_capacity(loops);
-
-    for i in 1..=loops {
-        let (out, time) = problem.solve()?;
-        times.push(time);
-
-        if i == loops {
-            return Ok((out, times));
-        }
-    }
-
-    unreachable!()
-}
-
-fn summarise_times(times: &Vec<Duration>, loops: u32) -> (Duration, Duration, Duration) {
-    let total: Duration = times.iter().sum();
-    let mean = total / loops;
-    let sd = {
-        let variance_nanos: f64 = times
-            .iter()
-            .map(|time| {
-                let diff = time.as_nanos() as f64 - mean.as_nanos() as f64;
-                diff.powf(2.)
-            })
-            .sum();
-        Duration::from_nanos(variance_nanos.sqrt() as u64)
-    };
-
-    (total, mean, sd)
 }
 
 // fn handle_command(command: Command) -> Result<()> {

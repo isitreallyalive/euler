@@ -8,7 +8,8 @@ pub mod prelude {
     pub use super::{Solution, error, problem, solution};
 }
 
-pub type Solution = Result<Box<dyn Display>>;
+pub type InnerSolution = Box<dyn Display>;
+pub type Solution = Result<InnerSolution>;
 
 /// A Project Euler problem
 #[derive(Clone)]
@@ -34,7 +35,7 @@ impl Problem {
         inventory::iter::<Self>().collect()
     }
 
-    pub fn solve(&self) -> Result<(Box<dyn Display>, Duration)> {
+    pub fn solve(&self) -> Result<(InnerSolution, Duration)> {
         let start = Instant::now();
         let out = (self.solve)()?;
         let end = Instant::now();
