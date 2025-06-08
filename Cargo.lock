@@ -1283,6 +1283,7 @@ dependencies = [
  "color-eyre",
  "euler",
  "owo-colors",
+ "phf",
  "problems",
  "regex",
  "reqwest",

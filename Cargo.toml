@@ -18,3 +18,4 @@ clap = "4.5.39"
 problems = { path = "problems" }
 reqwest = "0.12.19"
 owo-colors = "4.2.1"
+phf = "0.11.3"
