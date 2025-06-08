@@ -77,6 +77,7 @@ fn main() -> color_eyre::Result<()> {
                         .to_string()
                         .replace(r#"\dots"#, "...")
                         .replace(r#"\times"#, "×")
+                        .replace(r#"\,"#, ",")
                 };
 
                 (
@@ -102,7 +103,6 @@ fn main() -> color_eyre::Result<()> {
                 r#"//! Problem {}: {}
 //!
 {}
-
 // time complexity: O(?)
 use crate::prelude::*;
 
@@ -110,8 +110,7 @@ fn solve() -> Result<u32> {{
     Ok(0)
 }}
 
-problem!({}, solve);
-"#,
+problem!({}, solve);"#,
                 n, title, description, n
             )?;
 
