@@ -2,8 +2,8 @@ mod problems;
 pub use problems::Problem;
 
 pub mod prelude {
-    pub use crate::problem;
-    pub use color_eyre::{eyre::eyre as error, Result};
+    pub use crate::{error, problem};
+    pub use color_eyre::Result;
 }
 
 pub const PUBLIC_CHALLENGES: usize = 100;

@@ -43,7 +43,7 @@ fn solve() -> Result<usize> {
         }
     }
 
-    Err(error!("Could not find the Nth prime"))
+    error!("Could not find the Nth prime")
 }
 
 problem!(7, solve);

@@ -81,6 +81,8 @@ fn main() -> color_eyre::Result<()> {
                         .replace(r#"\dots"#, "...")
                         .replace(r#"\times"#, "×")
                         .replace(r#"\,"#, ",")
+                        .replace(r#"\lt"#, "<")
+                        .replace("^2", "²")
                 };
 
                 (
@@ -110,7 +112,7 @@ fn main() -> color_eyre::Result<()> {
 use crate::prelude::*;
 
 fn solve() -> Result<u32> {{
-    Ok(0)
+    unimplemented!();
 }}
 
 problem!({}, solve);"#,

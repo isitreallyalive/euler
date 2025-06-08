@@ -53,3 +53,11 @@ macro_rules! problem {
         problem!($number, 100, $solver);
     };
 }
+
+/// Report an error
+#[macro_export]
+macro_rules! error {
+    ($tokens:tt) => {
+        Err(color_eyre::eyre::eyre!($tokens))
+    };
+}
