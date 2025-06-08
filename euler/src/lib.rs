@@ -15,7 +15,7 @@ pub type Solution = Result<InnerSolution>;
 #[derive(Clone)]
 pub struct Problem {
     /// The number of the problem on the site
-    n: usize,
+    pub n: usize,
     /// How many iterations to run the solution for when benchmarking
     pub loops: usize,
     /// A function that returns the solution to the problem

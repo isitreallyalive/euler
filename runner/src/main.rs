@@ -1,9 +1,11 @@
 use clap::Parser;
+use cli_table::WithTitle;
 use color_eyre::Result;
 use euler::Problem;
 use owo_colors::OwoColorize;
 use std::{fs::OpenOptions, io::Write};
 
+mod all;
 mod new;
 mod run;
 
@@ -12,9 +14,6 @@ extern crate problems;
 
 /// How many solutions can be shared publicly according to Project Euler's website.
 const PUBLIC_CHALLENGES: usize = 100;
-
-#[macro_use]
-extern crate clap;
 
 #[derive(Parser)]
 struct Cli {
@@ -37,9 +36,9 @@ fn main() -> Result<()> {
                     r#"{}
 Solution: {}
 
-Total time: {total:?}
-Mean time: {mean:?} / loop
-Std dev: {sd:?}
+Total time: {total:.2?}
+Mean time: {mean:.2?} / loop
+Std dev: {sd:.2?}
 Ran for: {} loops"#,
                     hyperlink(
                         format!("https://projecteuler.net/problem={n}"),
@@ -83,18 +82,46 @@ You can find a full list of existing problems {}."#,
         }
     } else {
         // run all problems
-        let problems = Problem::all();
+        let mut problems = Problem::all();
+        problems.sort_by(|a, b| a.n.cmp(&b.n));
         let mut all_times = Vec::new();
-        let mut total_loops = 0;
+        let mut all_loops = 0;
+        let mut rows = Vec::new();
 
         for problem in problems {
             let (out, times) = run::run(problem)?;
             let (total, mean, sd) = run::summarise(&times, problem.loops as u32);
-
-            // add to overall statistics
+            let row = all::Row {
+                n: problem.n,
+                out,
+                total: total.into(),
+                mean: mean.into(),
+                sd: sd.into(),
+            };
+            rows.push(row);
             all_times.extend(times);
-            total_loops += problem.loops;
+            all_loops += problem.loops;
         }
+
+        // overall summary statistics
+        let (all_total, all_mean, all_sd) = run::summarise(&all_times, all_loops as u32);
+
+        println!(
+            r#"{}
+Problem count: {}
+
+Total time: {all_total:.2?}
+Mean time: {all_mean:.2?} / loop
+Std dev: {all_sd:.2?}
+Ran for: {all_loops} loops
+"#,
+            "All problems".green().bold(),
+            rows.len()
+        );
+
+        cli_table::print_stdout(rows.with_title())?;
+
+        // todo: output benchmarks to readme
     }
 
     Ok(())
