@@ -1,4 +1,10 @@
-pub mod prelude;
+mod problems;
+pub use problems::Problem;
+
+pub mod prelude {
+    pub use crate::problem;
+    pub use color_eyre::Result;
+}
 
 pub const PUBLIC_CHALLENGES: usize = 100;
 

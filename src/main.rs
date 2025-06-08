@@ -1,13 +1,13 @@
 use ::regex::Regex;
 use clap::Parser;
 use color_eyre::eyre::eyre;
-use euler::{prelude::*, regex, PUBLIC_CHALLENGES};
+use euler::{regex, Problem, PUBLIC_CHALLENGES};
 use scraper::{Html, Selector};
-use std::fs::{read_to_string, File, OpenOptions};
-use std::io::Write;
-use std::time::Instant;
-
-mod solutions;
+use std::{
+    fs::{File, OpenOptions},
+    io::Write,
+    time::Duration,
+};
 
 #[macro_use]
 extern crate clap;
@@ -20,37 +20,36 @@ struct Cli {
 
 #[derive(Subcommand)]
 pub enum Commands {
-    /// Scaffold a new solution
-    New { problem: usize },
+    /// Scaffold a new problem
+    New { n: usize },
 
-    /// Runs an existing solution
+    /// Runs an existing problem
     #[clap(aliases = &["r"])]
-    Run { problem: usize },
+    Run { n: usize },
 }
 
-#[tokio::main]
-async fn main() -> Result<()> {
+fn main() -> color_eyre::Result<()> {
     color_eyre::install()?;
 
     let Cli { command } = Cli::parse();
 
     match command {
-        Commands::New { problem } => {
+        Commands::New { n } => {
             // check whether the problem is public
-            let public = problem <= PUBLIC_CHALLENGES;
+            let public = n <= PUBLIC_CHALLENGES;
 
             // ensure that the problem exists
-            let res = reqwest::get(format!("https://projecteuler.net/problem={}", problem)).await?;
+            let res = reqwest::blocking::get(format!("https://projecteuler.net/problem={}", n))?;
             let exists = res.url().path() != "/archives";
 
             if !exists {
-                println!("Problem {} does not exist", problem);
+                println!("Problem {} does not exist", n);
                 return Ok(());
             }
 
             // fetch metadata
             let (title, description) = {
-                let document = Html::parse_document(&res.text().await?);
+                let document = Html::parse_document(&res.text()?);
                 let title = {
                     let selector = Selector::parse("h2").unwrap();
 
@@ -85,75 +84,62 @@ async fn main() -> Result<()> {
                     description
                         .trim()
                         .lines()
-                        .map(|line| format!("// {}\n", line))
+                        .map(|line| format!("//! {}\n", line))
                         .collect::<String>(),
                 )
             };
 
-            // create the solution file
-            let mut solution = File::create(
+            // create the problem file
+            let mut problem = File::create(
                 std::env::current_dir()?
                     .join("src")
-                    .join("solutions")
-                    .join(format!("p{}.rs", problem)),
+                    .join("problems")
+                    .join(format!("p{}.rs", n)),
             )?;
 
             writeln!(
-                solution,
-                r#"// Problem {}: {}
-//
+                problem,
+                r#"//! Problem {}: {}
+//!
 {}
-use euler::prelude::*;
 
-pub const LOOPS: u8 = 100;
-pub struct Problem;
+// time complexity: O(?)
+use crate::prelude::*;
 
-impl Execute for Problem {{
-    fn execute(&self) -> Result<Return> {{
-        let value = unimplemented!();
+fn solve() -> Result<u32> {{
+    Ok(0)
+}}
 
-        Ok(Return::u32(value))
-    }}
-}}"#,
-                problem, title, description
+problem!({}, solve);
+"#,
+                n, title, description, n
             )?;
-
-            // add to solution list
-            let mut contents = read_to_string("src/solutions/mod.rs")?;
-            let start = contents.rfind(",").unwrap() + 1;
-            contents.insert_str(start, &format!("\n\t{},", problem));
-
-            let mut solutions = OpenOptions::new()
-                .write(true)
-                .truncate(true)
-                .open("src/solutions/mod.rs")?;
-
-            solutions.write_all(contents.as_bytes())?;
 
             // if private, add to .gitignore
             if !public {
                 let mut gitignore = OpenOptions::new().append(true).open(".gitignore")?;
-                writeln!(gitignore, "src/solutions/p{}.rs", problem)?;
+                writeln!(gitignore, "src/problems/p{}.rs", n)?;
             }
 
             // todo: add to readme
         }
 
-        Commands::Run { problem } => {
-            let solution = solutions::get(problem).ok_or(eyre!("Problem not found"))?;
-            let loops = solutions::loops(problem);
+        Commands::Run { n } => {
+            let problem = Problem::get(n).ok_or(eyre!("Problem not found"))?;
+            let loops = problem.loops();
+            let mut times = Vec::with_capacity(loops as usize);
 
-            let start = Instant::now();
-            let out = solution.execute()?;
-
-            for _ in 0..(loops - 1) {
-                solution.execute()?;
+            for i in 1..=loops {
+                let (out, time) = problem.solve()?;
+                times.push(time);
+                if i == loops {
+                    println!("{}", out);
+                }
             }
 
-            let time = start.elapsed();
-            println!("{} loops in {:?}", loops, time);
-
-            println!("{}", out);
+            let total: Duration = times.iter().sum();
+            let mean = total / loops as u32;
+            println!("{} loops: Σ = {:?}, μ = {:?}", loops, total, mean);
         }
     }
 

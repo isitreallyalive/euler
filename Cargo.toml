@@ -3,12 +3,12 @@ name = "euler"
 publish = false
 version = "0.1.0"
 edition = "2021"
+build = "build.rs"
 
 [dependencies]
-clap = { version = "4.5.26", features = ["derive"] }
-color-eyre = "0.6.3"
-paste = "1.0.15"
+clap = { version = "4.5.39", features = ["derive"] }
+color-eyre = "0.6.5"
+inventory = "0.3.20"
 regex = "1.11.1"
-reqwest = { version = "0.12.12", default-features = false, features = ["rustls-tls"] }
-scraper = "0.22.0"
-tokio = { version = "1.43.0", default-features = false, features = ["macros", "rt-multi-thread"] }
+reqwest = { version = "0.12.19", default-features = false, features = ["blocking", "rustls-tls"] }
+scraper = "0.23.1"
