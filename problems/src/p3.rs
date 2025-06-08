@@ -9,7 +9,7 @@ use euler::prelude::*;
 
 const NUMBER: u64 = 600_851_475_143;
 
-fn solve() -> Result<u64> {
+fn solve() -> Solution {
     let mut largest = 1;
     let mut num = NUMBER;
 
@@ -34,7 +34,7 @@ fn solve() -> Result<u64> {
         largest = num;
     }
 
-    Ok(largest)
+    solution!(largest)
 }
 
 problem!(3, solve);

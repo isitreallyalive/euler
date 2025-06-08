@@ -9,7 +9,7 @@ use euler::prelude::*;
 
 const MAX: u32 = 4_000_000;
 
-fn solve() -> Result<u32> {
+fn solve() -> Solution {
     // every third fibonacci number is even.
     // see notes/p2.md for proof
     let mut sum = 0;
@@ -20,7 +20,7 @@ fn solve() -> Result<u32> {
         (a, b) = (b, 4 * b + a);
     }
 
-    Ok(sum)
+    solution!(sum)
 }
 
 problem!(2, solve);

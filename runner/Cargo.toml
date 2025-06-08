@@ -12,3 +12,4 @@ problems = { workspace = true }
 regex = { workspace = true }
 reqwest = { workspace = true, features = ["blocking"] }
 scraper = { workspace = true }
+owo-colors = { workspace = true }

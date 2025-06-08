@@ -8,7 +8,7 @@ use euler::prelude::*;
 
 const N: usize = 10_001;
 
-fn solve() -> Result<usize> {
+fn solve() -> Solution {
     // https://en.wikipedia.org/wiki/Prime_number_theorem
     let limit = {
         let n = N as f32;
@@ -38,7 +38,7 @@ fn solve() -> Result<usize> {
         if is_prime[i / 2] {
             prime_count += 1;
             if prime_count == N {
-                return Ok(i);
+                return solution!(i);
             }
         }
     }

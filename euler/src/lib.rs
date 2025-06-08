@@ -5,23 +5,29 @@ use std::{
 };
 
 pub mod prelude {
-    pub use super::{error, problem};
-    pub use color_eyre::Result;
+    pub use super::{Solution, error, problem, solution};
 }
 
+pub type Solution = Result<Box<dyn Display>>;
+
 /// A Project Euler problem
+#[derive(Clone)]
 pub struct Problem {
     /// The number of the problem on the site
-    pub number: usize,
+    n: usize,
     /// How many iterations to run the solution for when benchmarking
     pub loops: usize,
     /// A function that returns the solution to the problem
-    pub solver: fn() -> Result<Box<dyn Display>>,
+    solve: fn() -> Solution,
 }
 
 impl Problem {
-    pub fn get(number: usize) -> Option<&'static Self> {
-        inventory::iter::<Self>().find(|s| s.number == number)
+    pub const fn new(n: usize, loops: usize, solve: fn() -> Solution) -> Self {
+        Self { n, loops, solve }
+    }
+
+    pub fn get(n: usize) -> Option<&'static Self> {
+        inventory::iter::<Self>().find(|s| s.n == n)
     }
 
     pub fn all() -> Vec<&'static Self> {
@@ -30,7 +36,7 @@ impl Problem {
 
     pub fn solve(&self) -> Result<(Box<dyn Display>, Duration)> {
         let start = Instant::now();
-        let out = (self.solver)()?;
+        let out = (self.solve)()?;
         let end = Instant::now();
         Ok((out, end - start))
     }
@@ -42,18 +48,22 @@ inventory::collect!(Problem);
 #[macro_export]
 macro_rules! problem {
     // register a new problem
-    ($number:expr, $loops:expr, $solver:expr) => {
+    ($n:expr, $loops:expr, $solver:expr) => {
         inventory::submit! {
-            $crate::Problem {
-                number: $number,
-                loops: $loops,
-                solver: || $solver().map(|x| Box::new(x) as Box<dyn std::fmt::Display>)
-            }
+            $crate::Problem::new($n, $loops, $solver)
         }
     };
     // default to 100 loops
-    ($number:expr, $solver:expr) => {
-        problem!($number, 100, $solver);
+    ($n:expr, $solver:expr) => {
+        problem!($n, 100, $solver);
+    };
+}
+
+/// Respond with the solution
+#[macro_export]
+macro_rules! solution {
+    ($value:expr) => {
+        Ok(Box::new($value))
     };
 }
 

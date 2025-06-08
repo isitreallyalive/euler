@@ -17,7 +17,7 @@ fn is_palindrome(n: i32) -> bool {
     n == reversed
 }
 
-fn solve() -> Result<i32> {
+fn solve() -> Solution {
     let mut max = 0;
 
     for i in (100..=999).rev() {
@@ -33,7 +33,7 @@ fn solve() -> Result<i32> {
         }
     }
 
-    Ok(max)
+    solution!(max)
 }
 
 problem!(4, solve);

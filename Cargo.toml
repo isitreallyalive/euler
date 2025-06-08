@@ -15,5 +15,6 @@ regex = "1.11.1"
 scraper = "0.23.1"
 inventory = "0.3.20"
 clap = "4.5.39"
-problems = { version = "0.0.0", path = "problems" }
+problems = { path = "problems" }
 reqwest = "0.12.19"
+owo-colors = "4.2.1"

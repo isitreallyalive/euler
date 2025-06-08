@@ -16,13 +16,13 @@ fn triple(a: i32, n: i32) -> (i32, i32) {
     (b, c)
 }
 
-fn solve() -> Result<i32> {
+fn solve() -> Solution {
     // a must be the smallest side, so we can restrict the search
     for a in 1..=(N / 3) {
         let (b, c) = triple(a, N);
 
         if a.pow(2) + b.pow(2) == c.pow(2) {
-            return Ok(a * b * c);
+            return solution!(a * b * c);
         }
     }
 

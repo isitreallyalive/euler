@@ -1,6 +1,6 @@
 {
 	"files.exclude": {
-		"problems/src/lib.rs": true,
+		// "problems/src/lib.rs": true,
 		"target": true
 	},
 	"github.copilot.enable": {

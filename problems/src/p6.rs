@@ -12,9 +12,9 @@ use euler::prelude::*;
 
 const N: u64 = 100;
 
-fn solve() -> Result<u64> {
+fn solve() -> Solution {
     // see the derivation in: notes/p6.rs
-    Ok(N * (N + 1) * (3 * N + 2) * (N - 1) / 12)
+    solution!(N * (N + 1) * (3 * N + 2) * (N - 1) / 12)
 }
 
 problem!(6, solve);

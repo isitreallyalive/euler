@@ -12,10 +12,10 @@ fn sum_multiples(n: u32, limit: u32) -> u32 {
     n * sum
 }
 
-fn solve() -> Result<u32> {
+fn solve() -> Solution {
     // inclusion exclusion principle
     // https://en.wikipedia.org/wiki/Inclusion%E2%80%93exclusion_principle
-    Ok(sum_multiples(3, 1000) + sum_multiples(5, 1000) - sum_multiples(15, 1000))
+    solution!(sum_multiples(3, 1000) + sum_multiples(5, 1000) - sum_multiples(15, 1000))
 }
 
 problem!(1, solve);

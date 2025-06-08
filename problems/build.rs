@@ -6,7 +6,7 @@ use std::{
 
 fn main() -> Result<()> {
     let src = Path::new("src");
-    let mut f = File::create(src.join("all.rs"))?;
+    let mut f = File::create(src.join("lib.rs"))?;
 
     let mut problems = Vec::new();
 

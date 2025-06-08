@@ -1,9 +1,12 @@
-use ::regex::Regex;
 use clap::Parser;
+use color_eyre::Result;
 use color_eyre::eyre::eyre;
 use euler::Problem;
+use owo_colors::OwoColorize;
+use regex::Regex;
 use scraper::{Html, Selector};
 use std::{
+    fmt::Display,
     fs::{File, OpenOptions},
     io::Write,
     time::Duration,
@@ -23,151 +26,207 @@ extern crate clap;
 
 #[derive(Parser)]
 struct Cli {
-    #[clap(subcommand)]
-    command: Commands,
+    /// Problem number to run or create
+    n: Option<usize>,
 }
 
-#[derive(Subcommand)]
-pub enum Commands {
-    /// Scaffold a new problem
-    #[clap(aliases = &["n"])]
-    New { n: usize },
-
-    /// Runs an existing problem
-    #[clap(aliases = &["r"])]
-    Run { n: usize },
-
-    /// Times all of the problems ran sequentially.
-    #[clap(aliases = &["a"])]
-    All,
-}
-
-fn main() -> color_eyre::Result<()> {
+fn main() -> Result<()> {
     color_eyre::install()?;
+    let Cli { n } = Cli::parse();
 
-    let Cli { command } = Cli::parse();
+    if let Some(n) = n {
+        match Problem::get(n) {
+            Some(problem) => {
+                // run the problem
+                let (out, times) = run(problem)?;
+                let (total, mean, sd) = summarise_times(&times, problem.loops as u32);
 
-    match command {
-        Commands::New { n } => {
-            // check whether the problem is public
-            let public = n <= PUBLIC_CHALLENGES;
+                println!(
+                    r#"{}
+Solution: {}
 
-            // ensure that the problem exists
-            let res = reqwest::blocking::get(format!("https://projecteuler.net/problem={}", n))?;
-            let exists = res.url().path() != "/archives";
-
-            if !exists {
-                println!("Problem {} does not exist", n);
-                return Ok(());
+Total time: {total:?}
+Mean time: {mean:?} / loop
+Std dev: {sd:?}
+Ran for: {} loops"#,
+                    url(
+                        format!("https://projecteuler.net/problem={n}"),
+                        format!("Problem {n}").bold().green().to_string()
+                    ),
+                    out.bold(),
+                    problem.loops
+                );
             }
-
-            // fetch metadata
-            let (title, description) = {
-                let document = Html::parse_document(&res.text()?);
-                let title = {
-                    let selector = Selector::parse("h2").unwrap();
-
-                    document
-                        .select(&selector)
-                        .next()
-                        .unwrap()
-                        .text()
-                        .collect::<String>()
-                };
-                let description = {
-                    let selector = Selector::parse(".problem_content").unwrap();
-                    let regex = Regex::new(LATEX)?;
-
-                    regex
-                        .replace_all(
-                            &document
-                                .select(&selector)
-                                .next()
-                                .unwrap()
-                                .text()
-                                .collect::<String>(),
-                            "$1",
-                        )
-                        .to_string()
-                        .replace(r#"\dots"#, "...")
-                        .replace(r#"\times"#, "×")
-                        .replace(r#"\,"#, ",")
-                        .replace(r#"\lt"#, "<")
-                        .replace("^2", "²")
-                };
-
-                (
-                    title.trim().to_string(),
-                    description
-                        .trim()
-                        .lines()
-                        .map(|line| format!("//! {}\n", line))
-                        .collect::<String>(),
-                )
-            };
-
-            // create the problem file
-            let mut problem = File::create(
-                std::env::current_dir()?
-                    .join("src")
-                    .join("problems")
-                    .join(format!("p{}.rs", n)),
-            )?;
-
-            writeln!(
-                problem,
-                r#"//! Problem {}: {}
-//!
-{}
-// time complexity: O(?)
-use euler::prelude::*;
-
-fn solve() -> Result<u32> {{
-    unimplemented!();
-}}
-
-problem!({}, solve);"#,
-                n, title, description, n
-            )?;
-
-            // if private, add to .gitignore
-            if !public {
-                let mut gitignore = OpenOptions::new().append(true).open(".gitignore")?;
-                writeln!(gitignore, "src/problems/p{}.rs", n)?;
+            None => {
+                // create the problem
             }
-
-            // todo: add to readme
         }
+    } else {
+        // run all problems
+        let problems = Problem::all();
+        let mut all_times = Vec::new();
+        let mut total_loops = 0;
 
-        Commands::Run { n } => {
-            let problem = Problem::get(n).ok_or(eyre!("Problem not found"))?;
-            let mut times = Vec::with_capacity(problem.loops);
+        for problem in problems {
+            let (out, times) = run(problem)?;
+            let (total, mean, sd) = summarise_times(&times, problem.loops as u32);
 
-            for i in 1..=problem.loops {
-                let (out, time) = problem.solve()?;
-                times.push(time);
-                if i == problem.loops {
-                    println!("{}", out);
-                }
-            }
-
-            let total: Duration = times.iter().sum();
-            let mean = total / problem.loops as u32;
-            println!("{} loops: Σ = {:?}, μ = {:?}", problem.loops, total, mean);
-        }
-        Commands::All => {
-            let problems = Problem::all();
-            let loops: usize = problems.iter().map(|p| p.loops).sum();
-            let mut times = Vec::with_capacity(problems.len());
-            for problem in problems {
-                let (_, time) = problem.solve()?;
-                times.push(time);
-            }
-            let total: Duration = times.iter().sum();
-            let mean = total / loops as u32;
-            println!("Σ = {:?}, μ = {:?}", total, mean)
+            // add to overall statistics
+            all_times.extend(times);
+            total_loops += problem.loops;
         }
     }
 
     Ok(())
 }
+
+/// Make a URL clickable using ANSI codes
+fn url(url: String, text: String) -> String {
+    format!("\x1b]8;;{}\x1b\\{}\x1b]8;;\x1b\\", url, text)
+}
+
+fn run(problem: &'static Problem) -> Result<(Box<dyn Display>, Vec<Duration>)> {
+    // store the runtimes
+    let Problem { loops, .. } = problem.clone();
+    let mut times = Vec::with_capacity(loops);
+
+    for i in 1..=loops {
+        let (out, time) = problem.solve()?;
+        times.push(time);
+
+        if i == loops {
+            return Ok((out, times));
+        }
+    }
+
+    unreachable!()
+}
+
+fn summarise_times(times: &Vec<Duration>, loops: u32) -> (Duration, Duration, Duration) {
+    let total: Duration = times.iter().sum();
+    let mean = total / loops;
+    let sd = {
+        let variance_nanos: f64 = times
+            .iter()
+            .map(|time| {
+                let diff = time.as_nanos() as f64 - mean.as_nanos() as f64;
+                diff.powf(2.)
+            })
+            .sum();
+        Duration::from_nanos(variance_nanos.sqrt() as u64)
+    };
+
+    (total, mean, sd)
+}
+
+// fn handle_command(command: Command) -> Result<()> {
+//     match command {
+//         Command::New { n } => {
+//             // check whether the problem is public
+//             let public = n <= PUBLIC_CHALLENGES;
+
+//             // ensure that the problem exists
+//             let res = reqwest::blocking::get(format!("https://projecteuler.net/problem={}", n))?;
+//             let exists = res.url().path() != "/archives";
+
+//             if !exists {
+//                 println!("Problem {} does not exist", n);
+//                 return Ok(());
+//             }
+
+//             // fetch metadata
+//             let (title, description) = {
+//                 let document = Html::parse_document(&res.text()?);
+//                 let title = {
+//                     let selector = Selector::parse("h2").unwrap();
+
+//                     document
+//                         .select(&selector)
+//                         .next()
+//                         .unwrap()
+//                         .text()
+//                         .collect::<String>()
+//                 };
+//                 let description = {
+//                     let selector = Selector::parse(".problem_content").unwrap();
+//                     let regex = Regex::new(LATEX)?;
+
+//                     regex
+//                         .replace_all(
+//                             &document
+//                                 .select(&selector)
+//                                 .next()
+//                                 .unwrap()
+//                                 .text()
+//                                 .collect::<String>(),
+//                             "$1",
+//                         )
+//                         .to_string()
+//                         .replace(r#"\dots"#, "...")
+//                         .replace(r#"\times"#, "×")
+//                         .replace(r#"\,"#, ",")
+//                         .replace(r#"\lt"#, "<")
+//                         .replace("^2", "²")
+//                 };
+
+//                 (
+//                     title.trim().to_string(),
+//                     description
+//                         .trim()
+//                         .lines()
+//                         .map(|line| format!("//! {}\n", line))
+//                         .collect::<String>(),
+//                 )
+//             };
+
+//             // create the problem file
+//             let mut problem = File::create(
+//                 std::env::current_dir()?
+//                     .join("problems")
+//                     .join("src")
+//                     .join(format!("p{}.rs", n)),
+//             )?;
+
+//             writeln!(
+//                 problem,
+//                 r#"//! Problem {}: {}
+// //!
+// {}
+// // time complexity: O(?)
+// use euler::prelude::*;
+
+// fn solve() -> Result<u32> {{
+//     unimplemented!();
+// }}
+
+// problem!({}, solve);"#,
+//                 n, title, description, n
+//             )?;
+
+//             // if private, add to .gitignore
+//             if !public {
+//                 let mut gitignore = OpenOptions::new().append(true).open(".gitignore")?;
+//                 writeln!(gitignore, "src/problems/p{}.rs", n)?;
+//             }
+
+//             // todo: add to readme
+//         }
+
+//         Command::Run { n } => {}
+
+//         Command::All => {
+//             let problems = Problem::all();
+//             let loops: usize = problems.iter().map(|p| p.loops).sum();
+//             let mut times = Vec::with_capacity(problems.len());
+//             for problem in problems {
+//                 let (_, time) = problem.solve()?;
+//                 times.push(time);
+//             }
+//             let total: Duration = times.iter().sum();
+//             let mean = total / loops as u32;
+//             println!("Σ = {:?}, μ = {:?}", total, mean)
+//         }
+//     }
+
+//     Ok(())
+// }

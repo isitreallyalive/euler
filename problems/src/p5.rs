@@ -17,8 +17,8 @@ fn lcm(mut a: u64, mut b: u64) -> u64 {
     c / a
 }
 
-fn solve() -> Result<u64> {
-    Ok((2..=20).fold(1, |acc, n| lcm(acc, n)))
+fn solve() -> Solution {
+    solution!((2..=20).fold(1, |acc, n| lcm(acc, n)))
 }
 
 problem!(5, solve);

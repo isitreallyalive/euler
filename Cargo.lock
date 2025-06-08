@@ -1282,6 +1282,7 @@ dependencies = [
  "clap",
  "color-eyre",
  "euler",
+ "owo-colors",
  "problems",
  "regex",
  "reqwest",
