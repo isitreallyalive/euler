@@ -43,7 +43,7 @@ Ran for: {} loops"#,
                         format!("https://projecteuler.net/problem={n}"),
                         format!("Problem {n}").bold().green().to_string()
                     ),
-                    out.bold(),
+                    format_with_commas(out).bold(),
                     problem.loops
                 );
             }
@@ -92,7 +92,7 @@ You can find a full list of existing problems {}."#,
             let (mean, sd) = run::summarise(&times, problem.loops as u32);
             let row = all::Row {
                 n: problem.n,
-                out,
+                out: format_with_commas(out),
                 loops: problem.loops,
                 mean: mean.into(),
                 sd: sd.into(),
@@ -123,6 +123,30 @@ Ran for: {all_loops} loops
     }
 
     Ok(())
+}
+
+/// Format a value with comma separators if it's numeric
+fn format_with_commas<T: std::fmt::Display>(value: T) -> String {
+    let s = value.to_string();
+
+    // check if the string represents a number (digits only, possibly with negative sign)
+    if s.chars().all(|c| c.is_ascii_digit() || c == '-') {
+        // parse as i64 and format with commas
+        if let Ok(num) = s.parse::<i64>() {
+            return num
+                .to_string()
+                .as_bytes()
+                .rchunks(3)
+                .rev()
+                .map(std::str::from_utf8)
+                .collect::<Result<Vec<&str>, _>>()
+                .unwrap()
+                .join(",");
+        }
+    }
+
+    // if it's not a simple integer, return as-is
+    s
 }
 
 fn problem_url(n: usize) -> String {

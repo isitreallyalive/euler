@@ -1,5 +1,4 @@
 use cli_table::{Cell, CellStruct, format::Justify};
-use euler::InnerSolution;
 use std::time::Duration;
 
 pub struct DurationCell(Duration);
@@ -21,7 +20,7 @@ pub struct Row {
     #[table(title = "Problem", justify = "Justify::Center", bold)]
     pub n: usize,
     #[table(title = "Solution", justify = "Justify::Center")]
-    pub out: InnerSolution,
+    pub out: String,
     #[table(title = "Loops", justify = "Justify::Center")]
     pub loops: usize,
     #[table(title = "Mean time", justify = "Justify::Center")]
