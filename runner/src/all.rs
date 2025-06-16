@@ -22,8 +22,8 @@ pub struct Row {
     pub n: usize,
     #[table(title = "Solution", justify = "Justify::Center")]
     pub out: InnerSolution,
-    #[table(title = "Total time", justify = "Justify::Center")]
-    pub total: DurationCell,
+    #[table(title = "Loops", justify = "Justify::Center")]
+    pub loops: usize,
     #[table(title = "Mean time", justify = "Justify::Center")]
     pub mean: DurationCell,
     #[table(title = "Std dev", justify = "Justify::Center")]

@@ -30,13 +30,12 @@ fn main() -> Result<()> {
             Some(problem) => {
                 // run the problem
                 let (out, times) = run::run(problem)?;
-                let (total, mean, sd) = run::summarise(&times, problem.loops as u32);
+                let (mean, sd) = run::summarise(&times, problem.loops as u32);
 
                 println!(
                     r#"{}
 Solution: {}
 
-Total time: {total:.2?}
 Mean time: {mean:.2?} / loop
 Std dev: {sd:.2?}
 Ran for: {} loops"#,
@@ -90,11 +89,11 @@ You can find a full list of existing problems {}."#,
 
         for problem in problems {
             let (out, times) = run::run(problem)?;
-            let (total, mean, sd) = run::summarise(&times, problem.loops as u32);
+            let (mean, sd) = run::summarise(&times, problem.loops as u32);
             let row = all::Row {
                 n: problem.n,
                 out,
-                total: total.into(),
+                loops: problem.loops,
                 mean: mean.into(),
                 sd: sd.into(),
             };
@@ -104,13 +103,12 @@ You can find a full list of existing problems {}."#,
         }
 
         // overall summary statistics
-        let (all_total, all_mean, all_sd) = run::summarise(&all_times, all_loops as u32);
+        let (all_mean, all_sd) = run::summarise(&all_times, all_loops as u32);
 
         println!(
             r#"{}
 Problem count: {}
 
-Total time: {all_total:.2?}
 Mean time: {all_mean:.2?} / loop
 Std dev: {all_sd:.2?}
 Ran for: {all_loops} loops

@@ -25,10 +25,9 @@ pub fn run(problem: &'static Problem) -> Result<(InnerSolution, Vec<Duration>)> 
 /// Generate summary statistics for the run of a problem.
 ///
 /// Returns a tuple containing, in the following order:
-/// - Total time
 /// - Mean time
 /// - Standard deviation
-pub fn summarise(times: &Vec<Duration>, loops: u32) -> (Duration, Duration, Duration) {
+pub fn summarise(times: &Vec<Duration>, loops: u32) -> (Duration, Duration) {
     let total: Duration = times.iter().sum();
     let mean = total / loops;
     let sd = {
@@ -42,5 +41,5 @@ pub fn summarise(times: &Vec<Duration>, loops: u32) -> (Duration, Duration, Dura
         Duration::from_nanos(variance_nanos.sqrt() as u64)
     };
 
-    (total, mean, sd)
+    (mean, sd)
 }

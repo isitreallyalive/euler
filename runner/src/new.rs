@@ -1,5 +1,6 @@
 use super::problem_url;
 use color_eyre::Result;
+use owo_colors::OwoColorize;
 use regex::Regex;
 use reqwest::blocking;
 use scraper::{Html, Selector};
@@ -85,6 +86,8 @@ fn solve() -> Solution {{
 problem!({n}, solve);
 "#
     )?;
+
+    println!("{}", format!("Generated problems/src/p{n}.rs").bold());
 
     Ok(())
 }
