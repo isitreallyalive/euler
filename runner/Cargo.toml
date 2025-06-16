@@ -14,4 +14,4 @@ reqwest = { workspace = true, features = ["blocking"] }
 scraper.workspace = true
 owo-colors.workspace = true
 phf = { workspace = true, features = ["macros"] }
-cli-table = "0.5.0"
+cli-table.workspace = true

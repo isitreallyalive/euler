@@ -87,7 +87,7 @@ problem!({n}, solve);
 "#
     )?;
 
-    println!("{}", format!("Generated problems/src/p{n}.rs").bold());
+    println!("{}", format!("Generated file for '{title}'").bold());
 
     Ok(())
 }
