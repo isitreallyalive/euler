@@ -15,3 +15,4 @@ scraper.workspace = true
 owo-colors.workspace = true
 phf = { workspace = true, features = ["macros"] }
 cli-table.workspace = true
+sha2.workspace = true

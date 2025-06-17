@@ -49,4 +49,8 @@ fn solve() -> Solution {
     error!("Could not find the Nth prime")
 }
 
-problem!(7, solve);
+problem!(
+    7,
+    solve,
+    "ecbe74e25cfa4763dbc304ccac2ffb9912e9625cd9993a84bd0dd6d7dc0ca021"
+);

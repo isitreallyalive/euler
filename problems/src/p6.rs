@@ -17,4 +17,8 @@ fn solve() -> Solution {
     solution!(N * (N + 1) * (3 * N + 2) * (N - 1) / 12)
 }
 
-problem!(6, solve);
+problem!(
+    6,
+    solve,
+    "537942be3eb323c507623a6a73fa87bf5aeb97b7c7422993a82aa7c15f6d9cd6"
+);

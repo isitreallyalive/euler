@@ -1,4 +1,5 @@
 - todo: completion list
-- todo: tests
 - todo: optimise 10 and 7
 - todo: progress bar for all command
+- todo: watch
+- todo: mdbook

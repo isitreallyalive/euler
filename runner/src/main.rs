@@ -3,7 +3,7 @@ use cli_table::WithTitle;
 use color_eyre::Result;
 use euler::Problem;
 use owo_colors::OwoColorize;
-use std::{fs::OpenOptions, io::Write};
+use std::{fs::OpenOptions, io::Write, time::Duration};
 
 mod all;
 mod new;
@@ -29,23 +29,19 @@ fn main() -> Result<()> {
         match Problem::get(n) {
             Some(problem) => {
                 // run the problem
-                let (out, times) = run::run(problem)?;
-                let (mean, sd) = run::summarise(&times, problem.loops as u32);
+                let (out, times, correct) = run::run(problem)?;
 
                 println!(
                     r#"{}
 Solution: {}
-
-Mean time: {mean:.2?} / loop
-Std dev: {sd:.2?}
-Ran for: {} loops"#,
+"#,
                     hyperlink(
                         format!("https://projecteuler.net/problem={n}"),
                         format!("Problem {n}").bold().green().to_string()
                     ),
-                    format_with_commas(out).bold(),
-                    problem.loops
+                    format_solution(out, correct).bold(),
                 );
+                print_summary(times, problem.loops);
             }
             None => {
                 // create the problem
@@ -84,18 +80,19 @@ You can find a full list of existing problems {}."#,
         let mut problems = Problem::all();
         problems.sort_by(|a, b| a.n.cmp(&b.n));
         let mut all_times = Vec::new();
-        let mut all_loops = 0;
+        let mut all_loops = 0u32;
         let mut rows = Vec::new();
 
         for problem in problems {
-            let (out, times) = run::run(problem)?;
-            let (mean, sd) = run::summarise(&times, problem.loops as u32);
+            let (out, times, correct) = run::run(problem)?;
+            let (mean, range, cv) = run::summarise(&times, problem.loops as u32);
             let row = all::Row {
                 n: problem.n,
-                out: format_with_commas(out),
+                out: format_solution(out, correct),
                 loops: problem.loops,
                 mean: mean.into(),
-                sd: sd.into(),
+                range: range.into(),
+                cv: cv.into(),
             };
             rows.push(row);
             all_times.extend(times);
@@ -103,19 +100,15 @@ You can find a full list of existing problems {}."#,
         }
 
         // overall summary statistics
-        let (all_mean, all_sd) = run::summarise(&all_times, all_loops as u32);
-
         println!(
-            r#"{}
+            "{}
 Problem count: {}
-
-Mean time: {all_mean:.2?} / loop
-Std dev: {all_sd:.2?}
-Ran for: {all_loops} loops
-"#,
+",
             "All problems".green().bold(),
             rows.len()
         );
+        print_summary(all_times, all_loops);
+        println!();
 
         cli_table::print_stdout(rows.with_title())?;
 
@@ -125,27 +118,40 @@ Ran for: {all_loops} loops
     Ok(())
 }
 
-/// Format a value with comma separators if it's numeric
-fn format_with_commas<T: std::fmt::Display>(value: T) -> String {
-    let s = value.to_string();
+fn print_summary(times: Vec<Duration>, loops: u32) {
+    let (mean, (min, max), cv) = run::summarise(&times, loops);
 
-    // check if the string represents a number (digits only, possibly with negative sign)
-    if s.chars().all(|c| c.is_ascii_digit() || c == '-') {
-        // parse as i64 and format with commas
-        if let Ok(num) = s.parse::<i64>() {
-            return num
-                .to_string()
+    println!(
+        r#"Mean: {mean:.2?} / loop
+Range: [{min:.2?}, {max:.2?}]
+CV: {cv:.2?}
+Ran for: {loops} loops"#,
+    );
+}
+
+/// Add commas to solutions and colour them based on whether they are correct or not.
+fn format_solution<T: std::fmt::Display>(value: T, correct: Option<bool>) -> String {
+    let s = value.to_string();
+    // add commas
+    let s = s
+        .parse::<i64>()
+        .map(|n| {
+            n.to_string()
                 .as_bytes()
                 .rchunks(3)
                 .rev()
                 .map(std::str::from_utf8)
                 .collect::<Result<Vec<&str>, _>>()
                 .unwrap()
-                .join(",");
-        }
-    }
-
-    // if it's not a simple integer, return as-is
+                .join(",")
+        })
+        .unwrap_or(s);
+    // colourize
+    let s = match correct {
+        Some(true) => s.green().to_string(),
+        Some(false) => s.red().to_string(),
+        None => s.yellow().to_string(),
+    };
     s
 }
 

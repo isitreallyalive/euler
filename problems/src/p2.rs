@@ -24,4 +24,8 @@ fn solve() -> Solution {
     solution!(sum)
 }
 
-problem!(2, solve);
+problem!(
+    2,
+    solve,
+    "1f5882e19314ac13acca52ad5503184b3cb1fd8dbeea82e0979d799af2361704"
+);

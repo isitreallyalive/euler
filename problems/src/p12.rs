@@ -86,4 +86,8 @@ fn solve() -> Solution {
     }
 }
 
-problem!(12, solve);
+problem!(
+    12,
+    solve,
+    "3e7be445b6c19e6db58c2482005c1f78cb74011a4279249ca632011a9f1b61a2"
+);

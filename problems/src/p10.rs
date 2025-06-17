@@ -33,4 +33,9 @@ fn solve() -> Solution {
     solution!(sum)
 }
 
-problem!(10, 10, solve);
+problem!(
+    10,
+    solve,
+    "bed2d160e02f0540f19a64ca738aacb79cfcd08ba7e2421567b16cb6e7e3e90e",
+    10
+);

@@ -30,4 +30,8 @@ fn solve() -> Solution {
     error!("No pythagorean triplet found")
 }
 
-problem!(9, solve);
+problem!(
+    9,
+    solve,
+    "d912d9d473ef86f12da1fb2011c5c0c155bd3a0ebdb4bbd7ea275cecdcb63731"
+);

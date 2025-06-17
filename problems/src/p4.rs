@@ -37,4 +37,8 @@ fn solve() -> Solution {
     solution!(max)
 }
 
-problem!(4, solve);
+problem!(
+    4,
+    solve,
+    "aa74f52b4c428d89606b411bc165eb81a6266821ecc9b4f30cdb70c5c930f4d9"
+);

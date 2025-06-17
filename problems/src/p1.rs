@@ -18,4 +18,8 @@ fn solve() -> Solution {
     solution!(sum_multiples(3, 1000) + sum_multiples(5, 1000) - sum_multiples(15, 1000))
 }
 
-problem!(1, solve);
+problem!(
+    1,
+    solve,
+    "c0b20f4665d0388d564f0b6ecf3edc9f9480cb15fff87198b95701d9f5fe1f7b"
+);

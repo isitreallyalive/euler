@@ -26,4 +26,8 @@ fn solve() -> Solution {
     solution!(max_product)
 }
 
-problem!(8, solve);
+problem!(
+    8,
+    solve,
+    "b9fb30b6553415e9150051ce5710a93d0f55b22557c0068d8e16619a388f145a"
+);

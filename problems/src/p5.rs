@@ -22,4 +22,8 @@ fn solve() -> Solution {
     solution!((2..=20).fold(1, |acc, n| lcm(acc, n)))
 }
 
-problem!(5, solve);
+problem!(
+    5,
+    solve,
+    "1ba90ab11bfb2d2400545337212b0de2a5c7f399215175ade6396e91388912b1"
+);

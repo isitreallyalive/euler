@@ -92,4 +92,8 @@ const GRID: [[usize; SIZE]; SIZE] = [
     [01, 70, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52, 01, 89, 19, 67, 48],
 ];
 
-problem!(11, solve);
+problem!(
+    11,
+    solve,
+    "9ded5bc849d33e477aa9c944138d34f0aacc485a372e84464e8a572712a5b7da"
+);
