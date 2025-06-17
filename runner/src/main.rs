@@ -45,8 +45,9 @@ Solution: {}
             }
             None => {
                 // create the problem
-                if let Some((title, description)) = new::fetch(n) {
-                    new::write(n, title, description)?;
+                if let Some((title, description, description_html)) = new::fetch(n) {
+                    new::problem(n, &title, &description)?;
+                    new::chapter(n, &title, &description_html)?;
 
                     // if the challenge is private, add it to the gitignore
                     let public = n <= PUBLIC_CHALLENGES;
