@@ -224,10 +224,6 @@ fn update_summary(n: usize, title: &String) -> Result<()> {
         // write
         let new_content = lines.join("\n");
         fs::write(&summary_path, new_content)?;
-        println!(
-            "{}",
-            format!("Added chapter '{}' to SUMMARY.md in numerical order", title).bold()
-        );
     }
 
     Ok(())

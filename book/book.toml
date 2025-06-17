@@ -8,7 +8,7 @@ title = "euler"
 after = ["links"]
 
 [output.html]
-additional-css = ["theme/catppuccin.css"]
+additional-css = ["theme/catppuccin.css", "theme/euler.css"]
 default-theme = "latte"
 preferred-dark-theme = "mocha"
 

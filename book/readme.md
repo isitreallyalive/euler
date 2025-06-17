@@ -1,1 +1,2 @@
 - mdBook theme from [catppuccin/mdBook](https://github.com/catppuccin/mdBook)@[v3.1.1](https://github.com/catppuccin/mdBook/releases/tag/v3.1.1)
+- [euler.css](theme/euler.css) is adapted from project euler's [style_main.css](https://projecteuler.net/themes/style_main.1738882002.css)
