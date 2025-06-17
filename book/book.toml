@@ -1,0 +1,8 @@
+[book]
+authors = ["newt"]
+language = "en"
+src = "src"
+title = "euler"
+
+[preprocessor.katex]
+after = ["links"]

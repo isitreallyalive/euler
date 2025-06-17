@@ -2,4 +2,4 @@
 - todo: optimise 10 and 7
 - todo: progress bar for all command
 - todo: watch
-- todo: mdbook
+- todo: make `new` generate mdbook page
