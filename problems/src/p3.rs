@@ -1,10 +1,10 @@
-//! Problem 3: Largest Prime Factor
-//!
-//! The prime factors of 13195 are 5, 7, 13 and 29.
-//! What is the largest prime factor of the number 600851475143?
+//* Problem 3: Largest Prime Factor
+//*
+//* the prime factors of 13195 are 5, 7, 13 and 29.
+//* What is the largest prime factor of the number 600851475143?
 
-// time complexity: O(sqrt n)
-// https://en.wikipedia.org/wiki/Trial_division
+//! time complexity: O(sqrt n)
+//! where n is the input number
 use euler::prelude::*;
 
 const NUMBER: u64 = 600_851_475_143;

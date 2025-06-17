@@ -1,9 +1,10 @@
-//! Problem 4: Largest Palindrome Product
-//!
-//! A palindromic number reads the same both ways. The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.
-//! Find the largest palindrome made from the product of two 3-digit numbers.
+//* Problem 4: Largest Palindrome Product
+//*
+//* A palindromic number reads the same both ways. The largest palindrome made from the product of two 2-digit numbers is 9009 = 91 × 99.
+//* Find the largest palindrome made from the product of two 3-digit numbers.
 
-// time complexity: O(n^2)
+//! time complexity: O(n^2)
+//! where n is the cardinality of the range of numbers
 use euler::prelude::*;
 
 fn is_palindrome(n: i32) -> bool {

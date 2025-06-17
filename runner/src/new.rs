@@ -69,14 +69,14 @@ pub fn write(n: usize, title: String, description: String) -> Result<()> {
     // write the template
     let description = description
         .lines()
-        .map(|l| format!("//! {l}\n"))
+        .map(|l| format!("//* {l}\n"))
         .collect::<String>();
 
     write!(
         file,
-        r#"//! Problem {n}: {title}
+        r#"//* Problem {n}: {title}
 {description}
-// todo: time complexity: O(?)
+//! time complexity: O(?)
 use euler::prelude::*;
 
 fn solve() -> Solution {{

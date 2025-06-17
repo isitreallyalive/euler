@@ -1,23 +1,26 @@
-//! Problem 10: Summation of Primes
-//! The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
-//! Find the sum of all the primes below two million.
+//* Problem 10: Summation of Primes
+//* the sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
+//* Find the sum of all the primes below two million.
 
-// todo: time complexity: O(n log log n)
+//! time complexity: O(n log log n)
+//! where n is the limit for the sieve
 use euler::prelude::*;
 
-/// Sieve of Eratosthenes.
-/// See: https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
-fn sieve_sum(n: usize) -> usize {
-    let mut a = vec![true; n];
+const N: usize = 2_000_000;
+
+fn solve() -> Solution {
+    // sieve of eratosthenes
+    // see: https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
+    let mut a = vec![true; N];
     a[0] = false; // 0 is not prime
     a[1] = false; // 1 is not prime
 
     // sieve
-    let limit = (n as f64).sqrt() as usize;
+    let limit = (N as f64).sqrt() as usize;
     for i in 2..=limit {
         if a[i] {
             let mut j = i * i;
-            while j < n {
+            while j < N {
                 a[j] = false;
                 j += i;
             }
@@ -25,11 +28,9 @@ fn sieve_sum(n: usize) -> usize {
     }
 
     // sum all primes
-    (0..n).filter(|&i| a[i]).sum()
-}
+    let sum: usize = (0..N).filter(|&i| a[i]).sum();
 
-fn solve() -> Solution {
-    solution!(sieve_sum(2_000_000))
+    solution!(sum)
 }
 
 problem!(10, 10, solve);
