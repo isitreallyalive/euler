@@ -1,0 +1,1 @@
+- mdBook theme from [catppuccin/mdBook](https://github.com/catppuccin/mdBook)@[v3.1.1](https://github.com/catppuccin/mdBook/releases/tag/v3.1.1)

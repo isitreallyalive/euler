@@ -6,3 +6,11 @@ title = "euler"
 
 [preprocessor.katex]
 after = ["links"]
+
+[output.html]
+additional-css = ["theme/catppuccin.css"]
+default-theme = "latte"
+preferred-dark-theme = "mocha"
+
+git-repository-url = "https://github.com/isitreallyalive/euler"
+git-repository-icon = "fa-code-fork"
