@@ -3,3 +3,6 @@ hash +text:
 
 book +args:
   @cd book && mdbook {{args}}
+
+run number:
+  @bacon problem -- {{number}}
