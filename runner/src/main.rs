@@ -148,7 +148,7 @@ fn format_solution<T: std::fmt::Display>(value: T, correct: Option<bool>) -> Str
         })
         .unwrap_or(s);
     // colourize
-    
+
     match correct {
         Some(true) => s.green().to_string(),
         Some(false) => s.red().to_string(),

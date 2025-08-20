@@ -15,10 +15,9 @@ fn main() -> Result<()> {
             let path = entry.path();
             if path.extension().and_then(|s| s.to_str()) == Some("rs") {
                 if let Some(name) = path.file_stem().and_then(|s| s.to_str()) {
-                    if name.starts_with('p') && name.len() > 1
-                        && name[1..].parse::<u32>().is_ok() {
-                            problems.push(name.to_string());
-                        }
+                    if name.starts_with('p') && name.len() > 1 && name[1..].parse::<u32>().is_ok() {
+                        problems.push(name.to_string());
+                    }
                 }
             }
         }
