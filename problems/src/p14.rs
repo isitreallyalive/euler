@@ -1,6 +1,6 @@
 //* Problem 14: Longest Collatz Sequence
 //* The following iterative sequence is defined for the set of positive integers:
-//* 
+//*
 //* n → n/2 (n is even)
 //* n → 3n + 1 (n is odd)
 //* Using the rule above and starting with 13, we generate the following sequence:
@@ -40,7 +40,11 @@ fn solve() -> Solution {
             let mut temp_n = n;
             let mut temp_length = 0u32;
             while temp_n >= lengths.len() as u64 || lengths[temp_n as usize] == 0 {
-                temp_n = if temp_n % 2 == 0 { temp_n / 2 } else { 3 * temp_n + 1 };
+                temp_n = if temp_n % 2 == 0 {
+                    temp_n / 2
+                } else {
+                    3 * temp_n + 1
+                };
                 temp_length += 1;
             }
             temp_length + lengths[temp_n as usize]
@@ -60,4 +64,8 @@ fn solve() -> Solution {
     solution!(max_start)
 }
 
-problem!(14, solve, "78a262dd40eba0f7195686ec7f3891a39437523456f8d16fa9065a34409eeac6");
+problem!(
+    14,
+    solve,
+    "78a262dd40eba0f7195686ec7f3891a39437523456f8d16fa9065a34409eeac6"
+);

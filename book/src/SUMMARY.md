@@ -19,4 +19,5 @@
 - [Highly Divisible Triangular Number](./problems/12.md)
 - [Large Sum](./problems/13.md)
 - [Longest Collatz Sequence](./problems/14.md)
+- [Lattice Paths](./problems/15.md)
 <!-- problems -->
