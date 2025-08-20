@@ -6,3 +6,7 @@
 
 @r number:
   bacon problem -- {{number}}
+
+@rm number:
+  rm problems/src/p{{number}}.rs
+  rm book/src/problems/{{number}}.md

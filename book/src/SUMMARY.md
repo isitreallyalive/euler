@@ -18,4 +18,5 @@
 - [Largest Product in a Grid](./problems/11.md)
 - [Highly Divisible Triangular Number](./problems/12.md)
 - [Large Sum](./problems/13.md)
+- [Longest Collatz Sequence](./problems/14.md)
 <!-- problems -->

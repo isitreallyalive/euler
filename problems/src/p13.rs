@@ -5,6 +5,7 @@
 
 //! time complexity: O(N)
 // see the book for implementation details
+// https://euler.newty.dev/problems/13.html#notes
 use euler::prelude::*;
 
 fn solve() -> Solution {

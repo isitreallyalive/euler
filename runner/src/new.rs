@@ -11,10 +11,11 @@ use std::{
 
 const LATEX: &'static str = r#"\$\$?([^$]+)\$?\$"#;
 const REPLACEMENTS: phf::Map<&str, &str> = phf::phf_map! {
-    r#"\dots"# => "...",
-    r#"\times"# => "×",
-    r#"\,"# => ",",
-    r#"\lt"# => "<",
+    "\\dots" => "...",
+    "\\times" => "×",
+    "\\," => ",",
+    "\\lt" => "<",
+    "\\to" => "→",
     "^2" => "²"
 };
 
