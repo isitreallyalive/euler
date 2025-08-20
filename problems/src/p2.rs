@@ -6,6 +6,8 @@
 
 //! time complexity: O(log n)
 //! where n is the maximum value
+// see the book for implementation details
+// https://euler.newty.dev/problems/2.html#notes
 use euler::prelude::*;
 
 const MAX: u32 = 4_000_000;

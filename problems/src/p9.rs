@@ -7,6 +7,8 @@
 
 //! time complexity: O(n)
 //! where n is the target sum
+// see the book for implementation details
+// https://euler.newty.dev/problems/9.html#notes
 use euler::prelude::*;
 
 const N: i32 = 1000;

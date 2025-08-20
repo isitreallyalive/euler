@@ -8,6 +8,8 @@
 //* Find the difference between the sum of the squares of the first one hundred natural numbers and the square of the sum.
 
 //! time complexity: O(1)
+// see the book for implementation details
+// https://euler.newty.dev/problems/6.html#notes
 use euler::prelude::*;
 
 const N: u64 = 100;
