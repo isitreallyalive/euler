@@ -19,7 +19,7 @@ fn lcm(mut a: u64, mut b: u64) -> u64 {
 }
 
 fn solve() -> Solution {
-    solution!((2..=20).fold(1, |acc, n| lcm(acc, n)))
+    solution!((2..=20).fold(1, lcm))
 }
 
 problem!(

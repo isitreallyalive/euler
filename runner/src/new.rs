@@ -9,7 +9,7 @@ use std::{
     io::Write,
 };
 
-const LATEX: &'static str = r#"\$\$?([^$]+)\$?\$"#;
+const LATEX: &str = r#"\$\$?([^$]+)\$?\$"#;
 const REPLACEMENTS: phf::Map<&str, &str> = phf::phf_map! {
     "\\dots" => "...",
     "\\times" => "×",
@@ -67,7 +67,7 @@ pub fn fetch(n: usize) -> Option<(String, String, String)> {
 }
 
 /// Write the problem file.
-pub fn problem(n: usize, title: &String, description: &String) -> Result<()> {
+pub fn problem(n: usize, title: &str, description: &str) -> Result<()> {
     // create the file
     let mut file = File::create(
         std::env::current_dir()?
@@ -103,7 +103,7 @@ problem!({n}, solve);
 }
 
 /// Write a chapter in the book.
-pub fn chapter(n: usize, title: &String, description: &String) -> Result<()> {
+pub fn chapter(n: usize, title: &str, description: &str) -> Result<()> {
     // create the file
     let mut file = File::create(
         std::env::current_dir()?
@@ -113,7 +113,7 @@ pub fn chapter(n: usize, title: &String, description: &String) -> Result<()> {
             .join(format!("{n}.md")),
     )?;
 
-    let mut description = description.clone();
+    let mut description = description.to_owned();
 
     // handle individual rules like "n → n/2" and "n → 3n + 1"
     let rule_regex =
@@ -158,13 +158,13 @@ See it on [GitHub](https://github.com/isitreallyalive/euler/blob/main/problems/s
 }
 
 /// Update SUMMARY.md to include the new chapter
-fn update_summary(n: usize, title: &String) -> Result<()> {
+fn update_summary(n: usize, title: &str) -> Result<()> {
     let summary_path = std::env::current_dir()?
         .join("book")
         .join("src")
         .join("SUMMARY.md");
     let content = fs::read_to_string(&summary_path)?;
-    let new_entry = format!("- [{}](./problems/{}.md)", title, n);
+    let new_entry = format!("- [{title}](./problems/{n}.md)");
 
     // split the content to find where to insert the new entry
     let mut lines: Vec<&str> = content.lines().collect();
@@ -189,12 +189,11 @@ fn update_summary(n: usize, title: &String) -> Result<()> {
     if let (Some(start), Some(end)) = (problem_start_index, insert_index) {
         // extract existing problem entries and parse their numbers
         let mut problem_entries: Vec<(usize, String)> = Vec::new();
-
-        for i in start..end {
-            let line = lines[i];
+        let re = Regex::new(r"\]\(./problems/(\d+)\.md\)")?;
+        for line in lines.iter().take(end).skip(start) {
             if line.trim().starts_with("- [") || line.trim().starts_with('[') {
                 // extract problem number from the file path
-                if let Some(captures) = Regex::new(r"\]\(./problems/(\d+)\.md\)")?.captures(line) {
+                if let Some(captures) = re.captures(line) {
                     if let Ok(problem_num) = captures[1].parse::<usize>() {
                         problem_entries.push((problem_num, line.to_string()));
                     }

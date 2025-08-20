@@ -21,7 +21,7 @@ fn solve() -> Solution {
 
     // see: https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
     // only sieve odd numbers (except 2)
-    let mut is_prime = vec![true; (limit + 1) / 2];
+    let mut is_prime = vec![true; limit.div_ceil(2)];
     let mut prime_count = 1;
     let mut i = 3;
     while i * i <= limit {

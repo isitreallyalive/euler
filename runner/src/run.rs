@@ -39,12 +39,12 @@ pub fn run(problem: &'static Problem) -> Result<(InnerSolution, Vec<Duration>, O
 /// - Mean time
 /// - Range of times
 /// - Coefficient of variance
-pub fn summarise(times: &Vec<Duration>, loops: u32) -> (Duration, (Duration, Duration), Duration) {
+pub fn summarise(times: &[Duration], loops: u32) -> (Duration, (Duration, Duration), Duration) {
     let total: Duration = times.iter().sum();
     let mean = total / loops;
 
     let (min, max) = {
-        let mut sorted = times.clone();
+        let mut sorted = times.to_owned();
         sorted.sort();
         (sorted[0], sorted[sorted.len() - 1])
     };

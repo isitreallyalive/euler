@@ -55,7 +55,7 @@ Solution: {}
                         let mut gitignore = OpenOptions::new()
                             .append(true)
                             .open("problems/.gitignore")?;
-                        writeln!(gitignore, "\nsrc/p{}.rs", n)?;
+                        writeln!(gitignore, "\nsrc/p{n}.rs")?;
                     }
 
                     // todo: add to readme
@@ -86,7 +86,7 @@ You can find a full list of existing problems {}."#,
 
         for problem in problems {
             let (out, times, correct) = run::run(problem)?;
-            let (mean, range, cv) = run::summarise(&times, problem.loops as u32);
+            let (mean, range, cv) = run::summarise(&times, problem.loops);
             let row = all::Row {
                 n: problem.n,
                 out: format_solution(out, correct),
@@ -148,19 +148,19 @@ fn format_solution<T: std::fmt::Display>(value: T, correct: Option<bool>) -> Str
         })
         .unwrap_or(s);
     // colourize
-    let s = match correct {
+    
+    match correct {
         Some(true) => s.green().to_string(),
         Some(false) => s.red().to_string(),
         None => s.yellow().to_string(),
-    };
-    s
+    }
 }
 
 fn problem_url(n: usize) -> String {
-    format!("https://projecteuler.net/problem={}", n)
+    format!("https://projecteuler.net/problem={n}")
 }
 
 /// Make a URL clickable using ANSI codes
 fn hyperlink(url: String, text: String) -> String {
-    format!("\x1b]8;;{}\x1b\\{}\x1b]8;;\x1b\\", url, text)
+    format!("\x1b]8;;{url}\x1b\\{text}\x1b]8;;\x1b\\")
 }

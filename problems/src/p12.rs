@@ -75,7 +75,7 @@ fn solve() -> Solution {
             count_divisors(n / 2) * count_divisors(n + 1)
         } else {
             // n is odd: t(n) = n * ((n+1)/2)
-            count_divisors(n) * count_divisors((n + 1) / 2)
+            count_divisors(n) * count_divisors(n.div_ceil(2))
         };
 
         if divisors > 500 {
