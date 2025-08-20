@@ -12,7 +12,6 @@ const MAX: u32 = 4_000_000;
 
 fn solve() -> Solution {
     // every third fibonacci number is even.
-    // see notes/p2.md for proof
     let mut sum = 0;
     let (mut a, mut b) = (2, 8);
 

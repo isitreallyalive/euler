@@ -1,8 +1,8 @@
-hash +text:
-  @printf "{{text}}" | openssl sha256 | cut -d' ' -f2
+@h +text:
+  printf "{{text}}" | openssl sha256 | cut -d' ' -f2
+  
+@b:
+  cd book && mdbook serve
 
-book +args:
-  @cd book && mdbook {{args}}
-
-run number:
-  @bacon problem -- {{number}}
+@r number:
+  bacon problem -- {{number}}
