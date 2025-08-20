@@ -67,5 +67,6 @@ fn solve() -> Solution {
 problem!(
     14,
     solve,
-    "78a262dd40eba0f7195686ec7f3891a39437523456f8d16fa9065a34409eeac6"
+    "78a262dd40eba0f7195686ec7f3891a39437523456f8d16fa9065a34409eeac6",
+    10
 );

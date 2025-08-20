@@ -6,6 +6,7 @@ use std::{
 
 pub mod prelude {
     pub use super::{Solution, error, problem, solution};
+    pub use phf::{Map, phf_map};
 }
 
 pub trait SolutionDisplay: ToString + Display {}

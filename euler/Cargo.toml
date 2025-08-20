@@ -7,3 +7,4 @@ edition.workspace = true
 [dependencies]
 color-eyre.workspace = true
 inventory.workspace = true
+phf = { workspace = true, features = ["macros"] }

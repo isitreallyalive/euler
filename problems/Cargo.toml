@@ -8,3 +8,4 @@ edition.workspace = true
 color-eyre.workspace = true
 euler.workspace = true
 inventory.workspace = true
+phf = { workspace = true, features = ["macros"] }
